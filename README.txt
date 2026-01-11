@@ -1,28 +1,53 @@
-Overview
-This project demonstrates an AI personal assistant built using a model accessed via Ollama. It showcases key features like voice prompts, complete offline functionality, and a customizable callout name, alongside essential system control capabilities.
+Core problems:- 
+1. Dependancy on internet for AI access
+2. Privacy concerns.
 
-Project Status
-This is a demonstration version featuring separate frontend and backend components. Currently, these are not fully integrated as some functionalities are still under development. The demo aims to provide a preview of both the frontend and backend implementations.
+Inputs and outputs:- 
+Input> 
+1. Microphone → Voice commands 
+2. Keyboard → Text prompts
+3. Config Files → Model paths, app locations
+4. Settings →Timeout values, audio buffer sizes
 
-Key Features
-Offline operation ensuring privacy and no internet dependency
+Output:>
+1. Screen → Status messages, AI responses, time
+2. Browser → Opens websites (Google, YouTube)
+3. Apps → Launches VSCode, Discord, Spotify, Calculator
+4. Windows → Locks screen, shows time, shutdown/restart
+5. Console → Debug logs, intent detection, errors
 
-Voice-activated prompts with a customizable wake word
+Workflow Logic
+1. Passive Listening → Vosk continuously processes audio chunks
+2. Wake Word Detection → "john" in partial/final → Activate(wake word currently set to "john")
+3. Active Listening → 8s window for command → Vosk STT → text
+4. Intent Classification → Regex matching → {open_app, open_web, system_cmd, llama_query}
+5. Action Execution → Route to handler → subprocess/webbrowser/API call
+6. Response → Console output → Return to passive listening
 
-Basic system query handling (e.g., time and date retrieval)
+Tools/APIs used:
+1. Vosk → Wake word + command recognition
+2. Ollama → Core for locally processing queries 
+3. PyAudio → Microphone input
+4. subprocesses,ctypes → App launch, lock/shutdown
+5. webbrowser → Website opening
+6. re(regex) → Intent matching
 
-Windows system command support (e.g., website opening, shutdown, screen locking)
+Failure cases and limitations:
+1. Wake Word Miss → Background noise, accent, mic quality
+2. Command Misrecognition → Vosk small model accuracy (~85-90%)
+3. Regex Miss → Unseen phrasing ("please open chrome")
+4. LLM Timeout → Long responses on 70B models
+5. App Path Errors → Apps moved/reinstalled
+6. Single-User → No multi-speaker isolation
+7. Desktop Only → Windows-specific paths
+8. No TTS (text-to-speech) output → responses are console-only
 
-Integration stub for interacting with the Ollama AI model
+Redesigning if building it again:
+1. Replace Regex with ML Intent Classifier
+2. Add TTS Output
+3. Productionize: Docker containerization,Logging (structured JSON),etc
+4. Barge-in capability (interrupt ongoing speech)
 
-Important Notes
-The project code can run, but the AI model must be separately obtained and configured by the user.
 
-The model is not included in this repository, nor are there automated steps to set it up.
 
-Without the model, AI responses for complex queries will not function.
 
-System commands like time queries and Windows controls will still operate without the model.
-
-Usage
-To fully utilize the assistant’s AI capabilities, users must download and configure a compatible Ollama model independently.
